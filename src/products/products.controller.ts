@@ -32,9 +32,9 @@ export class ProductsController {
   @Get(':id')
   async findOneProduct(@Param('id') id:string){
     
-    return await firstValueFrom(this.productsClient.send({cmd: 'find_one_product'}, {id}).pipe(
+    return this.productsClient.send({cmd: 'find_one_product'}, {id}).pipe(
       catchError(error=>{throw new RpcException(error)})
-    ))
+    )
 
     /*
     try{
@@ -52,14 +52,16 @@ export class ProductsController {
 
   @Patch(':id')
   async updateProduct(@Param('id', ParseIntPipe) id:string, @Body () updateProductDto: UpdateProductDto){
-      return await firstValueFrom(this.productsClient.send({cmd: 'update_product'}, {id, ...updateProductDto}).pipe(catchError(error=>{throw new RpcException(error)})))
+      return this.productsClient.send({cmd: 'update_product'}, {id, ...updateProductDto}).pipe(catchError(error=>{throw new RpcException(error)}))
 
 
   }
 
   @Delete(':id')
-  removeProduct(@Param('id') id:string){
-      return this.productsClient.send({cmd: 'delete_product'}, {id})
+  asyncremoveProduct(@Param('id') id:string){
+
+    return this.productsClient.send({cmd: 'delete_product'}, {id}).pipe(catchError(error=>{throw new RpcException(error)}))
+
   }
 
 
